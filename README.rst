@@ -13,8 +13,8 @@ user. When submitted, the browser locally generates a public key pair,
 locally stores the private key, and submits the public key to the web
 server in the `SPKAC`_ format.
 
-_`keygen`: http://www.w3.org/TR/html5/forms.html#the-keygen-element
-_`SPKAC`:  https://en.wikipedia.org/wiki/Spkac
+.. _`keygen`: http://www.w3.org/TR/html5/forms.html#the-keygen-element
+.. _`SPKAC`:  https://en.wikipedia.org/wiki/Spkac
 
 When generating a form with a keygen element, the web server can include
 a challenge string in the form. This challenge string is returned in the
