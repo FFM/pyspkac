@@ -1,13 +1,28 @@
 from M2Crypto                 import X509, EVP, BIO, RSA
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.ber.encoder import BitStringEncoder
 from pyasn1.type.base         import Asn1Item
 from pyasn1.error             import PyAsn1Error
+from pyasn1.type.univ         import OctetString, BitString
 from base64                   import b64decode
 from base64                   import encodestring as b64encode
 
 class SPKAC_Decode_Error (ValueError) :
     pass
+
+class Bitstring (BitString) :
+    """ Extend pyasn1 bitstring to allow output as string.
+        We're using pyasn1 own serialisation for this.
+    """
+
+    def as_string (self) :
+        enc = BitStringEncoder ()
+        z = enc._encodeValue (None, self, None, None)
+        return z [0][1:]
+    # end def as_string
+
+# end class Bitstring
 
 class SPKAC (object) :
     """ Netscape SPKI/SPKAC data structure
@@ -26,8 +41,13 @@ class SPKAC (object) :
     # Table of Object Identifiers for public key crypto
     # We directly store the module from which the load_pub_key_bio
     # routine can be used and the assignment method name.
+    # Seems the message digest algo is also specified here (md5)
     signature_algorithms = \
-        { (1, 2, 840, 113549, 1, 1, 4) : (RSA, 'assign_rsa')
+        { (1, 2, 840, 113549, 1, 1, 4) : (RSA, 'assign_rsa', 'md5')
+        }
+
+    hash_algorithms = \
+        { (1, 3, 14, 3, 2, 26) : 'sha1'
         }
 
     def __init__ (self, b64val, challenge = None) :
@@ -47,15 +67,27 @@ class SPKAC (object) :
             raise SPKAC_Decode_Error, "Data after SPKAC value"
         assert len (seq)     == 3
         assert len (seq [0]) == 2
+        assert len (seq [1]) == 2
+        assert not seq [1][1]
+        self.signed    = der_encode (seq [0])
         self.spki      = seq [0][0]
         self.challenge = seq [0][1]
         self.sig_algo  = tuple (seq [1][0])
-        self.signature = seq [2]
+        self.signature = Bitstring (seq [2]).as_string ()
         if challenge and challenge != self.challenge :
             msg = "Challenge doesn't match: got %s expect %s" \
                 % (challenge, self.challenge)
             raise SPKAC_Decode_Error, msg
-        self.pkey      = self._compute_public_key_ ()
+        self.pkey, self.hash = self._compute_public_key_ ()
+        self.pkey.reset_context    (md = self.hash)
+        self.pkey.verify_init      ()
+        self.pkey.verify_update    (self.signed)
+        r = self.pkey.verify_final (self.signature)
+        if r < 0 :
+            raise SPKAC_Decode_Error, "Error during signature verification"
+        if r == 0 :
+            raise SPKAC_Decode_Error, "Invalid signature"
+        assert r == 1 # sig verified
     # end def __init__
 
     def _as_pem (self, asn1val, header = None) :
@@ -66,6 +98,9 @@ class SPKAC (object) :
             M2Crypto don't seem to have a version that directly accepts
             ASN.1, so we generate the pem version here.
         """
+        # Future: we might want to have default header
+        if header is None :
+            header = self.header
         if isinstance (asn1val, Asn1Item) :
             asn1val = der_encode (asn1val)
         v = b64encode (asn1val)
@@ -87,16 +122,16 @@ class SPKAC (object) :
         """
         if self.sig_algo not in self.signature_algorithms :
             raise 
-        buf      = BIO.MemoryBuffer (self._as_pem (self.spki, 'PUBLIC KEY'))
-        mod, asg = self.signature_algorithms [self.sig_algo]
+        buf = BIO.MemoryBuffer (self._as_pem (self.spki, 'PUBLIC KEY'))
+        mod, asg, hash = self.signature_algorithms [self.sig_algo]
         # the following effectively does
         # rsa = RSA.load_pub_key_bio (buf)
         # pkey.assign_rsa (rsa)
-        alg      = mod.load_pub_key_bio (buf)
-        pkey     = EVP.PKey ()
-        method   = getattr (pkey, asg)
+        alg    = mod.load_pub_key_bio (buf)
+        pkey   = EVP.PKey ()
+        method = getattr (pkey, asg)
         method (alg)
-        return pkey
+        return pkey, hash
     # end def _compute_public_key_
 
 # end class SPKAC
