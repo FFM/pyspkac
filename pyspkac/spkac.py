@@ -35,21 +35,6 @@ from bitstring                import Bitstring
 class SPKAC_Decode_Error (ValueError) :
     pass
 
-class Bitstring (BitString) :
-    """ Extend pyasn1 BitString to allow output as string.
-        We're using pyasn1 own serialisation for this.
-        Note that result is quite undefined if the number of bits isn't
-        divisible by 8. This is usually not the case for signatures etc.
-    """
-
-    def as_string (self) :
-        enc = BitStringEncoder ()
-        z = enc._encodeValue (None, self, None, None)
-        return z [0][1:]
-    # end def as_string
-
-# end class Bitstring
-
 class SPKAC (object) :
     """ Netscape SPKI/SPKAC data structure
         ASN.1 notation of this (see HTML-5 keygen docs)
@@ -284,4 +269,4 @@ wJVVLRzkApuJ+1ZntRCo05Nozkzd/h1rL+ZJ4rWms+jXoEmG1ASz8cI=
     pkey  = EVP.load_key_string   (ca_key)
     cert  = X509.load_cert_string (ca_crt)
     spkac.set_email ('testuser@example.com')
-    print spkac.gen_crt (pkey, cert, 1).as_pem ()
+    print spkac.gen_crt (pkey, cert, 42).as_pem ()
