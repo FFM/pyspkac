@@ -32,3 +32,22 @@ authentication to a web application and is therefore called a client
 certificate. The web browser (or other client-side application) supplies
 the certificate in the SSL handshake and proves it is in the posession
 of the necessary private key.
+
+Installation
+------------
+
+Install using the standard python setup.py mechanism, e.g.::
+
+ python setup.py install --prefix=/usr/local
+
+You need `pyasn1`_ and `M2Crypto`_ installed for this package to work.
+
+.. _`pyasn1`:   http://pyasn1.sourceforge.net/
+.. _`M2Crypto`: http://chandlerproject.org/Projects/MeTooCrypto
+
+Examples
+--------
+
+For a usage example see the end of `spkac.py`_
+
+.. _`spkac.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/spkac.py
