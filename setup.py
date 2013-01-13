@@ -78,7 +78,7 @@ from pyspkac.version import VERSION
 setup \
     ( name             = "pyspkac"
     , version          = VERSION
-    , url              = 'git://github.com/FFM/pyspkac.git'
+    , url              = 'https://github.com/FFM/pyspkac'
     , description      = 
         "Support for netscape / html5 SPKAC client certificate request"
     , long_description = ''.join (description)
