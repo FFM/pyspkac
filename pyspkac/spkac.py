@@ -269,4 +269,10 @@ wJVVLRzkApuJ+1ZntRCo05Nozkzd/h1rL+ZJ4rWms+jXoEmG1ASz8cI=
     pkey  = EVP.load_key_string   (ca_key)
     cert  = X509.load_cert_string (ca_crt)
     spkac.set_email ('testuser@example.com')
+    pe = spkac.push_extension
+    ne = X509.new_extension
+    pe (ne ('basicConstraints', 'CA:FALSE', critical = True))
+    ku = 'digitalSignature, keyEncipherment, keyAgreement'
+    pe (ne ('keyUsage', ku, critical = True))
+    pe (ne ('extendedKeyUsage', 'clientAuth, emailProtection, nsSGC'))
     print spkac.gen_crt (pkey, cert, 42).as_pem ()
