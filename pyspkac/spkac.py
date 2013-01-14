@@ -99,6 +99,15 @@ class SPKAC (object) :
         ...
         -----END CERTIFICATE-----
 
+        >>> spkac.cert.check_purpose (m2.X509_PURPOSE_SSL_SERVER, 0)
+        1
+        >>> spkac.cert.check_purpose (m2.X509_PURPOSE_NS_SSL_SERVER, 0)
+        1
+        >>> spkac.cert.check_purpose (m2.X509_PURPOSE_ANY, 0)   
+        1
+        >>> spkac.cert.check_purpose (m2.X509_PURPOSE_SSL_CLIENT, 0)
+        1
+
         >>> spkac = SPKAC \\
         ...     ( test.spkac_encoded
         ...     , 'non-matching-challenge'
@@ -145,13 +154,13 @@ class SPKAC (object) :
         try :
             seq, rest = der_decode (b64decode (b64val))
         except PyAsn1Error, e :
-            raise SPKAC_Decode_Error, e
+            raise SPKAC_Decode_Error (e)
         if rest :
-            raise SPKAC_Decode_Error, "ASN.1 decode: data after SPKAC value"
+            raise SPKAC_Decode_Error ("ASN.1 decode: data after SPKAC value")
         if len (seq) != 3 or len (seq [0]) != 2 or len (seq [1]) != 2 :
-            raise SPKAC_Decode_Error, "Unknown SPKAC data format"
+            raise SPKAC_Decode_Error ("Unknown SPKAC data format")
         if seq [1][1] :
-            raise SPKAC_Decode_Error, "Invalid Public Key Info"
+            raise SPKAC_Decode_Error ("Invalid Public Key Info")
         self.signed    = der_encode (seq [0])
         self.spki      = seq [0][0]
         self.challenge = seq [0][1]
@@ -160,17 +169,18 @@ class SPKAC (object) :
         if challenge and challenge != self.challenge :
             msg = 'Challenge doesn\'t match: got "%s" expect "%s"' \
                 % (challenge, self.challenge)
-            raise SPKAC_Decode_Error, msg
+            raise SPKAC_Decode_Error (msg)
         self.pkey, self.hash = self._compute_public_key_ ()
         self.pkey.reset_context    (md = self.hash)
         self.pkey.verify_init      ()
         self.pkey.verify_update    (self.signed)
         r = self.pkey.verify_final (self.signature)
         if r < 0 :
-            raise SPKAC_Decode_Error, "Error during signature verification"
-        if r == 0 :
-            raise SPKAC_Decode_Error, "Invalid signature"
-        assert r == 1 # sig verified
+            raise SPKAC_Decode_Error ("Error during signature verification")
+        elif r == 0 :
+            raise SPKAC_Decode_Error ("Invalid signature")
+        elif r != 1 :
+            raise RuntimeError ("Unexpected verify_final return code: %s" % r)
         self.extensions = X509.X509_Extension_Stack ()
         self.subject    = X509.X509_Name            ()
         # unnamed args from constructor are interpreted as extensions
@@ -217,9 +227,6 @@ class SPKAC (object) :
         cert.sign                     (pkey = ca_pkey, md = 'sha1')
         assert cert.verify            (ca_pkey)
         assert not cert.check_ca      ()
-        assert cert.check_purpose     (m2.X509_PURPOSE_SSL_SERVER, 0)
-        assert cert.check_purpose     (m2.X509_PURPOSE_NS_SSL_SERVER, 0)
-        assert cert.check_purpose     (m2.X509_PURPOSE_ANY, 0)   
         return cert
     # end def gen_crt
 
@@ -262,7 +269,7 @@ class SPKAC (object) :
             than RSA returned from a keygen tag by a browser.
         """
         if self.sig_algo not in self.signature_algorithms :
-            raise 
+            raise SPKAC_Decode_Error ("Unknown signature algorithm")
         buf = BIO.MemoryBuffer (self._as_pem (self.spki, 'PUBLIC KEY'))
         mod, asg, hash = self.signature_algorithms [self.sig_algo]
         # the following effectively does
