@@ -51,3 +51,26 @@ Examples
 For a usage example see the doctests in `spkac.py`_
 
 .. _`spkac.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/spkac.py
+
+Changes
+-------
+
+Version 0.2: Minor feature additions
+
+Move example from end of spkac.py into a doctest. Change of API:
+set_email no longer supported. Now extensions can be given as unnamed
+arguments in the constructor. Named arguments are interpreted as
+subject parameters for the resulting certificate. All this is shown in
+the doctest.
+
+- Remove set_email
+- Change constructor: Allow extensions as args and subject parameters as
+  keyword args
+- Add doctest
+- Fix setup.py to include install_requires to auto-install required
+  packages
+- Easier import:
+  from pyspkac import SPKAC
+  works now.
+
+Version 0.1: Initial Release
