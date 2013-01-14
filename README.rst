@@ -48,6 +48,6 @@ You need `pyasn1`_ and `M2Crypto`_ installed for this package to work.
 Examples
 --------
 
-For a usage example see the end of `spkac.py`_
+For a usage example see the doctests in `spkac.py`_
 
 .. _`spkac.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/spkac.py
