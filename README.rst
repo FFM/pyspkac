@@ -55,6 +55,13 @@ For a usage example see the doctests in `spkac.py`_
 Changes
 -------
 
+Version 0.3: Bug fix
+
+Import of version.py failed if dependecies were missing. This prevented
+a ``pip install`` from succeeding in case of missing dependencies.
+
+- Guard import in __init__.py to not fail for missing dependencies
+
 Version 0.2: Minor feature additions
 
 Move example from end of spkac.py into a doctest. Change of API:
