@@ -87,6 +87,7 @@ setup \
     , author_email     = "rsc@runtux.com"
     , packages         = ['pyspkac']
     , platforms        = 'Any'
+    , install_requires = ['M2Crypto', 'pyasn1']
     , classifiers      = \
         [ 'Development Status :: 4 - Beta'
         , 'License :: OSI Approved :: ' + license
