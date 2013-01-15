@@ -33,6 +33,11 @@ certificate. The web browser (or other client-side application) supplies
 the certificate in the SSL handshake and proves it is in the posession
 of the necessary private key.
 
+When building certificates it is also a good idea to have a certificate
+revocation list (CRL). The package provides routines to generate a
+revocation list from scratch using a list of certificate serial numbers
+and revocation dates.
+
 Installation
 ------------
 
@@ -48,12 +53,23 @@ You need `pyasn1`_ and `M2Crypto`_ installed for this package to work.
 Examples
 --------
 
-For a usage example see the doctests in `spkac.py`_
+For a usage example see the doctests in `spkac.py`_ and `crl.py`
 
 .. _`spkac.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/spkac.py
+.. _`crl.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/crl.py
 
 Changes
 -------
+
+Version 0.5: Major feature enhancements
+
+Implement Certificate Revocation Lists (CRL)
+
+- Implementation of CRL (with MD5 hash, this probably needs to be fixed
+  later on, don't know yet if there is a format with a stronger hash)
+- factor pem_object
+- Fix timezone of default valid_from for generated certificate: We used
+  a timezone correction on a timestamp which is already UTC.
 
 Version 0.4: Bug fix
 
