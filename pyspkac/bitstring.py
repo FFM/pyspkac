@@ -26,11 +26,11 @@ try :
     _encode_value = BitStringEncoder.encodeValue
 except AttributeError :
     try :
-        _encode_value = BitStringEncoder._encode_value
+        _encode_value = BitStringEncoder._encodeValue
     except AttributeError :
         raise AttributeError \
             ( "pyasn1.codec.ber.encoder.BitStringEncoder doesn't provide "
-              "either `encodeValue` nor `_encode_value`. "
+              "either `encodeValue` nor `_encodeValue`. "
             )
 
 class Bitstring (BitString) :
