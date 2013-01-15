@@ -22,6 +22,17 @@
 from pyasn1.codec.ber.encoder import BitStringEncoder
 from pyasn1.type.univ         import BitString
 
+try :
+    _encode_value = BitStringEncoder.encodeValue
+except AttributeError :
+    try :
+        _encode_value = BitStringEncoder._encode_value
+    except AttributeError :
+        raise AttributeError \
+            ( "pyasn1.codec.ber.encoder.BitStringEncoder doesn't provide "
+              "either `encodeValue` nor `_encode_value`. "
+            )
+
 class Bitstring (BitString) :
     """ Extend pyasn1 BitString to allow output as string.
         We're using pyasn1 own serialisation for this.
@@ -31,7 +42,7 @@ class Bitstring (BitString) :
 
     def as_string (self) :
         enc = BitStringEncoder ()
-        z = enc._encodeValue (None, self, None, None)
+        z   = _encodeValue (enc, None, self, None, None)
         return z [0][1:]
     # end def as_string
 
