@@ -42,7 +42,7 @@ class Bitstring (BitString) :
 
     def as_string (self) :
         enc = BitStringEncoder ()
-        z   = _encodeValue (enc, None, self, None, None)
+        z   = _encode_value (enc, None, self, None, None)
         return z [0][1:]
     # end def as_string
 
