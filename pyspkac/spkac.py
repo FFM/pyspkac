@@ -206,7 +206,7 @@ class SPKAC (object) :
             now.
         """
         if not not_before :
-            not_before = long (time.time ()) + time.timezone
+            not_before = long (time.time ())
         if not not_after :
             not_after  = not_before + 60 * 60 * 24 * 365
         nb        = ASN1.ASN1_UTCTIME ()
