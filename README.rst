@@ -55,6 +55,14 @@ For a usage example see the doctests in `spkac.py`_
 Changes
 -------
 
+Version 0.4: Bug fix
+
+Fix incompatibility with newer versions of pyasn1.
+
+- BitString serialisation in pyasn1 changed method names, the old
+  inofficial serialisation method with '_' is now official without the
+  '_'.
+
 Version 0.3: Bug fix
 
 Import of version.py failed if dependecies were missing. This prevented
