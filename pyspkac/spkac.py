@@ -89,12 +89,53 @@ class SPKAC (PEM_Object) :
         keyUsage
         extendedKeyUsage
 
-        >>> crt   = spkac.gen_crt (pkey, cert, 42).as_pem ()
-        >>> lines = crt.strip ().split ("\\n")
-        >>> print "%s\\n%s\\n%s" % (lines [0], "...", lines [-1])
+        >>> nb    = 1358330648
+        >>> na    = nb + 60 * 60 * 24 * 365 * 2
+        >>> crt   = spkac.gen_crt (pkey, cert, 42, nb, na).as_pem ()
+        >>> print crt.strip ()
         -----BEGIN CERTIFICATE-----
-        ...
+        MIICuzCCAnWgAwIBAgIBKjANBgkqhkiG9w0BAQUFADBiMQswCQYDVQQGEwJBVDEM
+        MAoGA1UECBMDTk9lMREwDwYDVQQHEwhXZWlkbGluZzETMBEGA1UEChMKcnVudHV4
+        LmNvbTEdMBsGCSqGSIb3DQEJARYOcnNjQHJ1bnR1eC5jb20wHhcNMTMwMTE2MTAw
+        NDA4WhcNMTUwMTE2MTAwNDA4WjBmMSMwIQYJKoZIhvcNAQkBFhR0ZXN0dXNlckBl
+        eGFtcGxlLmNvbTETMBEGA1UEChMKcnVudHV4LmNvbTEdMBsGA1UEAxQUdGVzdHVz
+        ZXJAZXhhbXBsZS5jb20xCzAJBgNVBAYTAkFUMIIBIjANBgkqhkiG9w0BAQEFAAOC
+        AQ8AMIIBCgKCAQEAzfgJpaW7GU9yhPyYMuVApj0pcRP8PCygWf8mf6CGHuS73Ut7
+        oq6YA4EeMKrC3dPHec40wpQhGaFd0/0eFn1ibZJ+a2Sk6DXQjiyKz3C0NQOad13z
+        UiZfoSZ2A260YvmxyFLOSfDbnshBIl4xUK4sYd/qnX5fYlz+oJhVzYygcZjxjJ6G
+        GsBZ0Mb+dqUJ+uJyUU+ov7rDfWW6wemmdVromUHoFdtKBZVzz/lrVI+ICq/uZxsJ
+        OGRyVFJfyUU/4KVorC+j5NmWqc4L7+tABI767DdAr6AkZh01d2YvtEZxJKyRHFkP
+        S1Qe6NM+IoRnU5Nn+GGeAoKCsEdEXUvfQBNJlwIDAQABo0owSDAMBgNVHRMBAf8E
+        AjAAMA4GA1UdDwEB/wQEAwIDqDAoBgNVHSUEITAfBggrBgEFBQcDAgYIKwYBBQUH
+        AwQGCWCGSAGG+EIEATANBgkqhkiG9w0BAQUFAAMxAEFLPrFfPZQ7atnEDN4Yii53
+        22T2S9hurYmEXqfRtsJvL8fVe2Ii7QGOqvsm6GQxDA==
         -----END CERTIFICATE-----
+        >>> clientcert  = X509.load_cert_string (crt)
+        >>> clientcert.get_subject ().CN
+        'testuser@example.com'
+        >>> clientcert.get_subject ().Email
+        'testuser@example.com'
+        >>> clientcert.get_subject ().O
+        'runtux.com'
+        >>> clientcert.get_subject ().OU
+        >>> clientcert.get_subject ().C
+        'AT'
+        >>> clientcert.get_version ()
+        2
+        >>> clientcert.get_not_before ().get_datetime ()
+        datetime.datetime(2013, 1, 16, 10, 4, 8, tzinfo=<Timezone: UTC>)
+        >>> clientcert.get_not_after ().get_datetime ()
+        datetime.datetime(2015, 1, 16, 10, 4, 8, tzinfo=<Timezone: UTC>)
+        >>> for n in range (3) :
+        ...     e = clientcert.get_ext_at (n)
+        ...     print e.get_name ()
+        basicConstraints
+        keyUsage
+        extendedKeyUsage
+        >>> clientcert.get_ext_at (4)
+        Traceback (most recent call last):
+          ...
+        IndexError
 
         >>> spkac.cert.check_purpose (m2.X509_PURPOSE_SSL_SERVER, 0)
         1
