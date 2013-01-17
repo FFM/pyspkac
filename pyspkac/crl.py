@@ -26,7 +26,7 @@ from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.type.univ         import BitString, Sequence, ObjectIdentifier
 from pyasn1.type.univ         import Integer, Null
 from pyasn1.type.useful       import UTCTime
-from pem_object               import PEM_Object
+from pyspkac.pem_object       import PEM_Object
 
 class CRL (PEM_Object) :
     """ Model a Certificate Revocation List

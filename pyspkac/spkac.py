@@ -26,8 +26,8 @@ from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.error             import PyAsn1Error
 from base64                   import b64decode
-from bitstring                import Bitstring
-from pem_object               import PEM_Object
+from pyspkac.bitstring        import Bitstring
+from pyspkac.pem_object       import PEM_Object
 
 class SPKAC_Decode_Error (ValueError) :
     pass
