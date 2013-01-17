@@ -58,8 +58,39 @@ For a usage example see the doctests in `spkac.py`_ and `crl.py`
 .. _`spkac.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/spkac.py
 .. _`crl.py`: https://github.com/FFM/pyspkac/blob/master/pyspkac/crl.py
 
+Notes for Building
+------------------
+
+When doing a release the following commands should be issued::
+
+ python setup.py clean --all
+ python setup.py sdist --manifest-only
+ git status
+ python setup.py sdist --quiet
+ git status
+ python setup.py register
+ python setup.py sdist upload --sign
+
+The interleaved ``git status`` commands work around a bug in older git
+versions that, when ``git describe`` with ``--dirty`` option is used,
+will erroneously detect *dirty* status when the directory is stat-dirty.
+Since ``setup.py sdist`` will create symlinks this will make the
+directory stat-dirty.
+
+The --manifest-only will re-create the ``MANIFEST`` file even if neither
+``setup.py`` nor ``MANIFEST.in`` have changed.
+
 Changes
 -------
+
+Version 0.6: Bug fix
+
+Release now contains missing files from 0.5.
+
+- Add *Notes for Building* section and document release procedure to
+  avoid missing files in the future
+- Remove relative ``import`` statements
+- Add version import to ``__init__.py``
 
 Version 0.5: Major feature enhancements
 
