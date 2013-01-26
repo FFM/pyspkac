@@ -141,8 +141,8 @@ class SPKAC (PEM_Object) :
         >>> clientcert.get_subject ().OU
         >>> clientcert.get_subject ().C
         'AT'
-        >>> clientcert.get_version ()
-        2
+        >>> long (clientcert.get_version ())
+        2L
         >>> clientcert.get_not_before ().get_datetime ()
         datetime.datetime(2013, 1, 16, 10, 4, 8, tzinfo=<Timezone: UTC>)
         >>> clientcert.get_not_after ().get_datetime ()
