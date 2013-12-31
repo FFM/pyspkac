@@ -162,7 +162,7 @@ class SPKAC (PEM_Object) :
         1
         >>> spkac.cert.check_purpose (m2.X509_PURPOSE_NS_SSL_SERVER, 0)
         1
-        >>> spkac.cert.check_purpose (m2.X509_PURPOSE_ANY, 0)   
+        >>> spkac.cert.check_purpose (m2.X509_PURPOSE_ANY, 0)
         1
         >>> spkac.cert.check_purpose (m2.X509_PURPOSE_SSL_CLIENT, 0)
         1
@@ -216,9 +216,9 @@ class SPKAC (PEM_Object) :
             raise SPKAC_Decode_Error (e)
         if rest :
             raise SPKAC_Decode_Error ("ASN.1 decode: data after SPKAC value")
-        if len (seq) != 3 or len (seq [0]) != 2 or len (seq [1]) != 2 :
+        if len (seq) != 3 or len (seq [0]) != 2 or len (seq [1]) not in (1, 2) :
             raise SPKAC_Decode_Error ("Unknown SPKAC data format")
-        if seq [1][1] :
+        if len (seq [1]) == 2 and seq [1][1] :
             raise SPKAC_Decode_Error ("Invalid Public Key Info")
         self.signed    = der_encode (seq [0])
         self.spki      = seq [0][0]
