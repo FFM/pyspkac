@@ -83,6 +83,15 @@ The --manifest-only will re-create the ``MANIFEST`` file even if neither
 Changes
 -------
 
+Version 0.7: Bug fixes
+
+Fix github issues
+
+- Fix Github issue 2 problems with version number format, we now use a
+  numeric value but leave the tag format as before (starting with 'V-').
+- Merge pull request for Opera Workaround in Github issue 3
+
+
 Version 0.6: Bug fix
 
 Release now contains missing files from 0.5.

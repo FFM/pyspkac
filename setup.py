@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (C) 2013 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2013-14 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -62,6 +62,8 @@ else :
                 v += '-modified'
                 break
         version = v
+    if version.startswith ('V_') or version.startswith ('V-') :
+        version = version [2:]
     cmd     = 'git log -n 1'
     log     = Popen (cmd.split (), stdout = PIPE).communicate () [0].strip ()
     for line in log.split ('\n') :
