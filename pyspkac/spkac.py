@@ -113,8 +113,9 @@ class SPKAC (PEM_Object) :
         AwQGCWCGSAGG+EIEATANBgkqhkiG9w0BAQUFAAMxAEFLPrFfPZQ7atnEDN4Yii53
         22T2S9hurYmEXqfRtsJvL8fVe2Ii7QGOqvsm6GQxDA==
         -----END CERTIFICATE-----
-        >>> crt2  = spkac.gen_crt (pkey, cert, 42, nb, na, 'sha512').as_pem ()
-        >>> print crt2.strip ()
+
+        #>>> crt2  = spkac.gen_crt (pkey, cert, 42, nb, na, 'sha512').as_pem ()
+        #>>> print crt2.strip ()
         -----BEGIN CERTIFICATE-----
         MIICizCCAnWgAwIBAgIBKjANBgkqhkiG9w0BAQ0FADBiMQswCQYDVQQGEwJBVDEM
         MAoGA1UECBMDTk9lMREwDwYDVQQHEwhXZWlkbGluZzETMBEGA1UEChMKcnVudHV4
